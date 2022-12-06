@@ -11,6 +11,7 @@ export class AppComponent implements OnInit {
   //name = 'Angular ' + VERSION.major;
   // api : https://jsonplaceholder.typicode.com/users
   public tableData: any = [];
+  public tempData: any = [];
   public searchKey: string = null;
   constructor(private apiService: ApiService) {}
 
@@ -24,33 +25,23 @@ export class AppComponent implements OnInit {
           email: res.email,
         };
       });
+      this.tempData = [...this.tableData];
       console.log(this.tableData);
     });
   }
 
   searchTable(event): void {
     const key = event.target.value;
-    if (!key) return;
-    console.log(key, this.tableData);
-    let nameFilter = this.tableData.filter((d) => d?.name.startsWith(key));
-
-    console.log('name', nameFilter);
-
-    // let userNameFilter =this.tableData.filter(d =>d?.userName && d?.userName.toString().startsWith(key));
-    // let emailFilter =this.tableData.filter(d => d?.email && d?.email.toString().startsWith(key));
-
-    // if(nameFilter?.length){
-    //   this.tableData = nameFilter;
-    //   return;
-    // }
-    // if(userNameFilter?.length){
-    //   this.tableData = nameFilter;
-    //   return;
-    // }
-    // if(emailFilter?.length){
-    //   this.tableData = nameFilter;
-    //   return;
-    // }
-    console.log(this.tableData);
+    if (!key) {
+      this.tableData = this.tempData;
+      return;
+    }
+    this.tableData = this.tempData.filter(
+      (d) =>
+        d?.id === parseInt(key) ||
+        d?.name.toLowerCase().startsWith(key) ||
+        d?.username.toLowerCase().startsWith(key) ||
+        d?.email.toLowerCase().startsWith(key)
+    );
   }
 }
